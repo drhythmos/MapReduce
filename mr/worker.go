@@ -74,13 +74,16 @@ func executeReduce(reducef func(string, []string) string, reply *Reply) {
 		}
 		mapFile.Close()
 	}
-	reduceFile, _ := os.CreateTemp("", "example")
+	reduceFile, _ := os.CreateTemp(".", "example")
 	defer os.Remove(reduceFile.Name())
 	for key, val := range kvDict {
 		finalVal := reducef(key, val)
 		fmt.Fprintf(reduceFile, "%v %v\n", key, finalVal)
 	}
-	os.Rename(reduceFile.Name(), fmt.Sprintf("mr-out-%d", reply.TaskId))
+	err := os.Rename(reduceFile.Name(), fmt.Sprintf("mr-out-%d", reply.TaskId))
+if err != nil {
+        log.Fatal("rename failed:", err)
+}
 	args := Args{
 		TaskId: reply.TaskId,
 		Task:   reply.Task,
