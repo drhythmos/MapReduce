@@ -177,16 +177,6 @@ Workers
       ▼
 Final Output (mr-out-*)
 ```
-
----
-
-# Interview Talking Points
-
-- The **Coordinator** creates tasks, assigns work to workers using RPC, tracks task status, and reassigns timed-out tasks.
-- **Workers** continuously request tasks, execute the user-defined `Map` and `Reduce` functions, write intermediate files, and notify the coordinator when finished.
-- Intermediate files (`mr-X-Y`) partition map outputs for reducers.
-- Final results are written to `mr-out-*`.
-
 ---
 
 # Troubleshooting
