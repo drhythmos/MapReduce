@@ -37,7 +37,7 @@ func executeMap(mapf func(string, string) []KeyValue, reply *Reply) {
 	tempFiles := make([]TempFile, reply.N)
 	for i := 0; i < reply.N; i++ {
 		tempFiles[i].name = fmt.Sprintf("mr-%d-%d", reply.TaskId, i)
-		tempFiles[i].filePtr, _ = os.CreateTemp("", "example")
+		tempFiles[i].filePtr, _ = os.CreateTemp(".", "example")
 		defer os.Remove(tempFiles[i].filePtr.Name())
 		defer tempFiles[i].filePtr.Close()
 		tempFiles[i].writer = bufio.NewWriter(tempFiles[i].filePtr)
@@ -48,7 +48,10 @@ func executeMap(mapf func(string, string) []KeyValue, reply *Reply) {
 	}
 	for _, v := range tempFiles {
 		v.writer.Flush()
-		os.Rename(v.filePtr.Name(), v.name)
+		err := os.Rename(v.filePtr.Name(), v.name)
+		if err != nil {
+        	log.Fatal("map rename failed:", err)
+}
 	}
 	args := Args{
 		TaskId: reply.TaskId,
